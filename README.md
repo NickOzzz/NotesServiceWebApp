@@ -1,6 +1,6 @@
 Notes service
 -
-This repo contains project which is currently deployed on domain https://nikita-lavrenchuk/notes
+This repo contains project which is currently deployed on domain https://nikita-lavrenchuk.com/notes
 
 Before steps
 -
