@@ -15,6 +15,6 @@ public class DefaultRedirectController {
     @GetMapping
     public RedirectView RedirectToMainProfilePage()
     {
-        return new RedirectView("/about/nikita-lavrenchuk");
+        return new RedirectView("/notes/login");
     }
 }
