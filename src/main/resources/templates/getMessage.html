@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css"
+      integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous"/>
+<link rel="stylesheet" th:href="@{/css/getMessage.css}"/>
+<head>
+    <meta charset="UTF-8">
+    <title>Notes service Home</title>
+    <link rel="icon" type="image/png" th:href="@{/images/title.png}"/>
+</head>
+<body th:us="${username}" th:receiver="${filter}" onload="init()">
+<div id="title-box">
+    <img th:src="@{/images/title.png}" id="title"/>
+</div>
+<button class="btn btn-danger" id="icon-button" onclick="openInfo()">
+</button>
+<div id="user-info-box" class="pull-right">
+    <strong th:text="${username}" id="user-info-box-text"></strong>
+    <form th:method="post" th:action="@{/logout}">
+        <button id="user-info-box-logout-button" class="btn btn-danger" type="submit">logout</button>
+    </form>
+    <form th:method="get" th:action="@{/notes/change-password}">
+        <button id="user-info-box-change-password-button" class="btn btn-danger" type="submit">change password</button>
+    </form>
+    <button id="user-info-box-pre-delete-button" class="btn btn-danger" type="button" onclick="showDeleteButton()">delete user</button>
+    <form th:method="post" th:action="@{/user/delete}">
+        <button id="user-info-box-delete-button" class="btn btn-danger" type="submit">delete user???</button>
+    </form>
+</div>
+<div id="refresh-box">
+    <img th:src="@{/images/refresh.png}" id="refresh-users-button-scroll" class="pull-right" onclick="refresh()"/>
+</div>
+<div id="main-section">
+    <!-- Filter for chats -->
+    <div>
+        <form th:action="@{/message/panel/filter}" th:method="post">
+            <input id="filter-users-field" class="pull-left form-control"
+                   placeholder="filter username" type="text" name="filter" th:value="${filter}"/>
+            <button id="filter-users-button" type="submit" class="btn btn-secondary pull-left">filter</button>
+        </form>
+        <button id="refresh-users-button" type="button" class="btn btn-secondary pull-right" onclick="refresh()">refresh</button>
+        <form th:action="@{/message/panel/filter}" th:method="post">
+            <input id="clear-filter-users-input" type="text" value="" name="filter"/>
+            <button id="clear-filter-users-button" class="btn btn-secondary pull-left" type="submit">show all</button>
+        </form>
+    </div>
+    <div class="clearfix" id="main-section-container">
+        <div class="alert alert-success text-center" id="no-notes-warning" th:if="${#lists.size(messages) == 0}">
+            No notes present!
+        </div>
+        <!-- Table with main notes -->
+        <table class="table" id="main-section-table" th:if="${#lists.size(messages) > 0}">
+            <thead>
+            <tr>
+                <th id="main-section-table-note" scope="col">Note</th>
+                <th scope="col">File</th>
+                <th scope="col">Creator</th>
+                <th scope="col">Time</th>
+                <th scope="col">Public</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr scope="col" th:color="${note.messageColor}" th:each="note : ${messages}">
+                <td th:text="${note.message}">Note</td>
+                <td id="main-section-table-image" th:if="${note.fileName} != 'None'" th:text="${note.fileNameWithoutId}" th:link="${note.filePath}" onclick="openLink(this.getAttribute('link'))">File</td>
+                <td th:if="${note.fileName} == 'None'" th:text="${note.fileNameWithoutId}">File</td>
+                <td id="main-section-table-creator" th:if="${note.creator} != ${username}" th:text="${note.creator}" th:creator="${note.creator}"
+                    onclick="findChat(this.getAttribute('creator'))">Creator</td>
+                <td id="main-section-table-creator-username" th:if="${note.creator} == ${username}" th:text="You" th:creator="${note.creator}"
+                    onclick="findChat(this.getAttribute('creator'))">Creator</td>
+                <td id="main-section-table-time" th:text="${note.timeOfCreation}">Time</td>
+
+                <td th:if="${note.creator} == ${username} and not ${note.accessible}" th:text="No">Public</td>
+                <td th:if="${note.accessible} and ${note.receiverUser} == ${username}" th:text="'To You'"
+                    th:creator="${note.receiverUser}" onclick="findChat(this.getAttribute('creator'))" id="main-section-table-public-username">Public</td>
+                <td th:if="${note.accessible} and ${note.receiverUser} and ${note.receiverUser} != '' and ${note.receiverUser} != ${username}"
+                    th:creator="${note.receiverUser}" onclick="findChat(this.getAttribute('creator'))"  id="main-section-table-public"
+                    th:text="'To ' + ${note.receiverUser}">Public</td>
+                <td th:if="${note.accessible} and not ${note.receiverUser} or ${note.accessible} and ${note.receiverUser} == ''" th:text="'To All'">Public</td>
+
+                <td>
+                    <form th:action="@{/message/panel/delete}" th:method="post">
+                        <input type="text" id="main-section-table-delete-input-filter" name="filter" th:value="${filter}"/>
+                        <input id = "main-section-table-delete-input"
+                               th:value="${note.messageId}"
+                               type="text"
+                               name="messageId"/>
+                        <button
+                                th:if="${note.creator} == ${username}"
+                                th:m-id="${note.messageId}"
+                                th:m="${note.message}"
+                                th:priv="${note.accessible}"
+                                th:receiver="${note.receiverUser}"
+                                class="btn btn-primary pull-right"
+                                id="main-section-table-edit-button"
+                                type="button"
+                                onclick="editUpdateForm(
+                                 this.getAttribute('m-id'),
+                                 this.getAttribute('m'),
+                                 this.getAttribute('receiver'),
+                                 this.getAttribute('priv'))">
+                            edit
+                        </button>
+                        <button
+                                th:if="${note.creator} == ${username}"
+                                class="btn btn-danger pull-right"
+                                id="main-section-table-delete-button"
+                                type="submit">
+                            delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <!-- Form for addition of notes.  -->
+        <p class="text-center" id="main-section-add-note-title">Add note</p>
+        <div class="alert alert-danger" th:if="${param.emptyMessage}">
+            Note cannot be blank! Please try again.
+        </div>
+        <div class="alert alert-danger" th:if="${param.lengthLimit}">
+            Note cannot be longer than 1000 characters (whitespaces counted)! Please try again.
+        </div>
+        <div class="alert alert-danger" th:if="${param.fileSizeExceeded}">
+            File size cannot be bigger than 10MB! Please try again.
+        </div>
+        <form th:action="@{/message/panel/create}" th:object="${messageDto}" th:method="post" enctype="multipart/form-data">
+					<textarea
+                            maxlength="1000"
+                            class="form-control"
+                            id="main-section-add-note-textarea"
+                            placeholder="1000 or less characters"
+                            rows="10"
+                            type="text"
+                            th:field="*{message}"/>
+            <label class="pull-left" id="main-section-size-limit-text">10MB MAX FILE</label>
+            <input id="main-section-file-selection" type="file" name="file" accept="*">
+            <p class="pull-left">make note visible for all users?</p>
+            <input type="text" id="main-section-add-note-input-filter" name="filter" th:value="${filter}"/>
+            <input
+                    id="main-section-add-note-checkbox"
+                    type="checkbox"
+                    class="pull-left"
+                    th:field="*{accessible}"/>
+            <p class="pull-left" id="main-section-select-user-note">only to specific user?</p>
+            <select class="pull-left" id="main-section-select-user" th:field="*{receiverUser}">
+                <option th:each="creator : ${creators}" th:text="${creator}" th:value="${creator}"></option>
+            </select>
+            <button type="submit" id="main-section-add-note-button" class="btn btn-success btn-outline pull-right">Add</button>
+        </form>
+        <br/><br/><br/><br/><br/><br/><br/>
+        <div id="notice-holder">
+            <p>@This app stores only authentication cookies.
+                All passwords are protected by encryption and cannot be decrypted.
+                Notes cannot be accessed by anyone except for the creator unless marked to be public</p>
+        </div>
+    </div>
+</div>
+<!-- Form for update of notes. Opens only when the button for edit is pressed. -->
+<div id="update-note-popup-holder">
+    <div id="update-note-popup">
+        <form th:action="@{/message/panel/update}" th:object="${messageDto}" th:method="post" enctype="multipart/form-data">
+            <div class="clearfix">
+                <button
+                        type="submit"
+                        id="update-note-button"
+                        class="btn btn-success btn-outline pull-right"
+                        onclick="validateUpdateField()">
+                    Update
+                </button>
+                <button
+                        type="button"
+                        class="btn btn-secondary pull-left"
+                        data-bs-dismiss="modal"
+                        id="update-note-popup-close-button"
+                        onclick="closeUpdateForm()">
+                    x
+                </button>
+            </div>
+            <input type="text" id="update-note-input" th:field="*{messageId}"/>
+            <input type="text" id="update-note-input-filter" name="filter" th:value="${filter}"/>
+            <textarea
+                    maxlength="1000"
+                    placeholder="1000 or less characters"
+                    class="form-control"
+                    id="update-note-textarea"
+                    type="text"
+                    rows="8"
+                    th:field="*{message}"/>
+            <p id="update-note-popup-replace-image-text" class="pull-left">change current file selection?</p>
+            <input
+                    id="update-note-popup-checkbox-replace-image"
+                    class="pull-left"
+                    type="checkbox"
+                    th:field="*{replaceImage}"/>
+            <label class="pull-left" id="update-note-popup-size-limit-text">10MB MAX FILE</label>
+            <input id="update-note-popup-pick-file" type="file" name="file" accept="*" class="pull-left"/>
+            <br/><br/>
+            <p id="update-note-popup-checkbox-text" class="pull-left">make note visible for all users?</p>
+            <input
+                    id="update-note-popup-checkbox"
+                    class="pull-left"
+                    type="checkbox"
+                    th:field="*{accessible}"/>
+            <p class="pull-left" id="update-note-popup-select-user-note">and send note to specific user?</p>
+            <select class="pull-left" id="update-note-popup-select-user" th:field="*{receiverUser}">
+                <option th:each="creator : ${creators}" th:text="${creator}" th:value="${creator}"></option>
+            </select>
+        </form>
+    </div>
+</div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
+<script th:src="@{/js/getMessage.js}"></script>
+</html>

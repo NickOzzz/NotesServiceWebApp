@@ -1,0 +1,133 @@
+body {
+     background-color:#606b60;
+}
+ #title-box {
+     display: flex;
+     justify-content: center;
+     margin-top:50px;
+}
+ #title {
+     margin-bottom:100px;
+     width:30%;
+     height:20%;
+     user-drag: none;
+     user-select: none;
+     -moz-user-select: none;
+     -webkit-user-drag: none;
+     -webkit-user-select: none;
+     -ms-user-select: none;
+}
+#main-login-holder {
+     display:flex;
+     justify-content:center;
+}
+ #main-login {
+     margin-top:50px;
+     left:35%;
+     top:30%;
+     width:40%;
+}
+ #main-login-failure-message {
+     margin-bottom:50px;
+}
+ #main-login-user-deleted-message {
+     margin-bottom:50px;
+}
+ #main-login-logout-successful-message {
+     margin-bottom:50px;
+}
+ #main-login-register-successful-message {
+     margin-bottom:50px;
+}
+ #main-login-username-label {
+     color:#34f72a;
+}
+ #main-login-password-label {
+     margin-top:40px;
+     color:#34f72a;
+}
+ #main-login-button {
+     margin-top:28px;
+     background-color:#34f72a;
+     border-color:#34f72a;
+     color:#606b60;
+}
+ #main-login-button:hover {
+     background-color:#606b60;
+     border-color:#34f72a;
+     color:#34f72a
+}
+ #main-register-button {
+     margin-top:28px;
+     background-color:#34f72a;
+     border-color:#34f72a;
+     color:#606b60;
+}
+ #main-register-button:hover {
+     background-color:#606b60;
+     border-color:#34f72a;
+     color:#34f72a
+}
+ #username-input {
+     background-color:#606b60;
+     border-color:#34f72a;
+     color:#34f72a;
+}
+ #password-input {
+     background-color:#606b60;
+     border-color:#34f72a;
+     color:#34f72a;
+}
+::-webkit-scrollbar{
+
+    -webkit-appearance: none;
+    width: 7px;
+
+}
+
+::-webkit-scrollbar-thumb {
+
+    border-radius: 4px;
+    background-color: rgba(0,0,0,.5);
+    -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #707070;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #355cc9;
+}
+::-webkit-overflow-scrolling:touch; {
+    background:#707070;
+    width: 5px;
+}
+ #loading-spinner {
+   visibility: hidden;
+}
+ .spinner {
+   position: fixed;
+   top: 50%;
+   left:47%;
+   width:88px;
+   height:88px;
+   border-radius:50%;
+   background:radial-gradient(farthest-side,#34f72a 94%,#0000) top/14.1px 14.1px no-repeat,
+          conic-gradient(#0000 30%,#34f72a);
+   -webkit-mask:radial-gradient(farthest-side,#0000 calc(100% - 14.1px),#000 0);
+   animation: spinner-c7wet2 1s infinite linear;
+}
+ @keyframes spinner-c7wet2 {
+   100% {
+      transform:rotate(1turn);
+   }
+}

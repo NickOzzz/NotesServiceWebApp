@@ -1,0 +1,53 @@
+body {
+     background-color:#606b60;
+}
+ #main-error {
+     position:fixed;
+     left:35%;
+     top:30%;
+     width:30%;
+}
+ #main-back-button {
+     margin-top:10px;
+     background-color:#34f72a;
+     border-color:#34f72a;
+     color:#606b60;
+}
+ #main-back-button:hover {
+     background-color:#606b60;
+     border-color:#34f72a;
+     color:#34f72a
+}
+::-webkit-scrollbar{
+
+    -webkit-appearance: none;
+    width: 7px;
+
+}
+
+::-webkit-scrollbar-thumb {
+
+    border-radius: 4px;
+    background-color: rgba(0,0,0,.5);
+    -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #707070;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #355cc9;
+}
+::-webkit-overflow-scrolling:touch; {
+    background:#707070;
+    width: 5px;
+}
