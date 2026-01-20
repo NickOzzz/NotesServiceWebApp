@@ -5,11 +5,13 @@ body {
      display: flex;
      justify-content: center;
      margin-top:50px;
+     width: 100%;
+     height: 100%;
 }
  #title {
      margin-bottom:100px;
-     width:30%;
-     height:20%;
+     width:45%;
+     height:25%;
      user-drag: none;
      user-select: none;
      -moz-user-select: none;
