@@ -10,7 +10,7 @@ body {
 }
  #title {
      margin-bottom:100px;
-     width:40%;
+     width:35%;
      height:20%;
      user-drag: none;
      user-select: none;
@@ -36,7 +36,7 @@ body {
 }
  #register-title {
      margin-bottom:100px;
-     width:40%;
+     width:35%;
      height:20%;
      user-drag: none;
      user-select: none;
